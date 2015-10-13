@@ -18,32 +18,32 @@ function validityPhone(str){
 	var amountNumber = 0;
 	var flag = 0; // значение флага: 0-нет "("; 1-есть "("; 2-есть "("и")"
 	
-	if(str.charAt(0) === '+'){
+	if(str[0] === '+'){
 		i=1;
 	} else {
 		i=0;
 	}
-	if(str.charAt(i) === '-'){
-		return fals;
+	if(str[i] === '-'){
+		return false;
 	}
 	
 	for(i;i<str.length;i++){
-		if(Number(str.charAt(i)) || str.charAt(i) === '-' || str.charAt(i) === ' '){
-			if(Number(str.charAt(i))){
+		if(Number(str[i]) || str[i] === '-' || str[i] === ' '){
+			if(Number(str[i])){
 				amountNumber++;
 			}
-			if(str.charAt(i) === '-' && (str.charAt(i-1) === ')' || str.charAt(i-1) === '-')){
+			if(str[i] === '-' && (str[i-1] === ')' || str[i-1] === '-')){
 				return false;
 			}
 		} else{
-			if(str.charAt(i) === '(' && amountNumber<3 && str.charAt(i-1) !== '+'){ // проверка правильности постановки скобок
+			if(str[i] === '(' && amountNumber<3 && str[i-1] !== '+'){ // проверка правильности постановки скобок
 				if(flag === 0){
 					flag++;
 				} else{
 					return false;
 				}
 			} else{
-				if(str.charAt(i) === ')' && flag === 1 && str.charAt(i-4) === '('){
+				if(str[i] === ')' && flag === 1 && str[i-4] === '('){
 					flag++;
 				} else{
 					return false;
