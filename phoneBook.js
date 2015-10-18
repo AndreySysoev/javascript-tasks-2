@@ -53,8 +53,8 @@ function validityPhone(str){
 }
 
 function formattingPhone(phone){
-	const digitRegExp = /\d+/g;
-	var cleanPhone =  phone.match(digitRegExp).join('');
+	const DIGIT_REG_EXP = /\d+/g;
+	var cleanPhone =  phone.match(DIGIT_REG_EXP).join('');
 	var formPhone = '';
 	
 	if(cleanPhone.length === 10){
@@ -98,20 +98,24 @@ function add(name, phone, email){
 		phone: phone,
 		email: email
 	};
-	const regexMail = /^[\w\.\d-_]+@[\w\.\d-_а-я]+\.[\wа-я]{2,4}$/i;
-	if (!(validityPhone(phone) && regexMail.test(email))) {
+	const REGEX_MAIL = /^[\w\.\d-_]+@[\w\.\d-_а-я]+\.[\wа-я]{2,4}$/i;
+	if (!(validityPhone(phone) && REGEX_MAIL.test(email))) {
 		return false;
 	};
 	phoneBook.push(user);
 	return true;
 };
 
+function isSubstringInRecord(record,query){
+	return record.name.indexOf(query)+1 || 
+		   record.phone.indexOf(query)+1 || 
+		   record.email.indexOf(query)+1;
+}
+
 function find(query){
 	var goodList = [];
 	for(var i=0;i<phoneBook.length;i++){
-		if(phoneBook[i].name.indexOf(query)+1 || 
-		phoneBook[i].phone.indexOf(query)+1 || 
-		phoneBook[i].email.indexOf(query)+1){
+		if(isSubstringInRecord(phoneBook[i],query)){
 			goodList.push(phoneBook[i]);
 		}
 	}
@@ -121,11 +125,9 @@ function find(query){
 function remove(query){
 	var haveSubstring = function (str) {
 		return str.indexOf(query)+1;
-	}
+	};
 	for(var i=0;i<phoneBook.length;i++){
-		if(haveSubstring(phoneBook[i].name) || 
-		   haveSubstring(phoneBook[i].phone) || 
-		   haveSubstring(phoneBook[i].email)){
+		if(isSubstringInRecord(phoneBook[i],query)){
 			console.log('Deleted: '+phoneBook[i].name);
 			phoneBook.splice(i,1);
 			i--;
@@ -146,28 +148,30 @@ function importFromCsv(filename){
 };
 
 function showTable(filename){
-	const widthName = 20;
-	const widthPhone = 20;
-	const widthEmail = 25	;
+	const MAX_WIDTH_NAME = 20;
+	const MAX_WIDTH_PHONE = 20;
+	const MAX_WIDTH_EMAIL = 25	;
 	
-	console.log('+'+buildLine(widthName,'=')+'+'+buildLine(widthPhone,'=')+'+'+buildLine(widthEmail,'=')+'+');
-	console.log('¦ Имя'+buildLine(widthName-4,' ')+'¦ Телефон'+buildLine(widthPhone-8,' ')+'¦ email'+buildLine(widthEmail-6,' ')+'¦');
-	console.log('+'+buildLine(widthName,'=')+'+'+buildLine(widthPhone,'=')+'+'+buildLine(widthEmail,'=')+'+');
+	console.log('+'+buildLine(MAX_WIDTH_NAME,'=')+'+'+buildLine(MAX_WIDTH_PHONE,'=')+'+'+buildLine(MAX_WIDTH_EMAIL,'=')+'+');
+	console.log('¦ Имя'+buildLine(MAX_WIDTH_NAME-4,' ')+'¦ Телефон'+buildLine(MAX_WIDTH_PHONE-8,' ')+'¦ email'+buildLine(MAX_WIDTH_EMAIL-6,' ')+'¦');
+	console.log('+'+buildLine(MAX_WIDTH_NAME,'=')+'+'+buildLine(MAX_WIDTH_PHONE,'=')+'+'+buildLine(MAX_WIDTH_EMAIL,'=')+'+');
 
-	var name, phone, email;
+	var name;
+	var phone;
+	var email;
 	for(var i=0;i<phoneBook.length;i++){
 		name = phoneBook[i].name;
 		phone = formattingPhone(phoneBook[i].phone);
 		email = phoneBook[i].email;
 		
 		while(!(name === '') || !(phone === '') || !(email === '')){
-			console.log('¦ '+name.substring(0,widthName-1)+buildLine(widthName-1-name.substring(0,widthName-1).length,' ')+
-						'¦ '+phone.substring(0,widthPhone-1)+buildLine(widthPhone-1-phone.substring(0,widthPhone-1).length,' ')+
-						'¦ '+email.substring(0,widthEmail-1)+buildLine(widthEmail-1-email.substring(0,widthEmail-1).length,' ')+'¦');
-			name = name.substring(widthName-1);
-			phone = phone.substring(widthPhone-1);
-			email = email.substring(widthEmail-1);
+			console.log('¦ '+name.substring(0,MAX_WIDTH_NAME-1)+buildLine(MAX_WIDTH_NAME-1-name.substring(0,MAX_WIDTH_NAME-1).length,' ')+
+						'¦ '+phone.substring(0,MAX_WIDTH_PHONE-1)+buildLine(MAX_WIDTH_PHONE-1-phone.substring(0,MAX_WIDTH_PHONE-1).length,' ')+
+						'¦ '+email.substring(0,MAX_WIDTH_EMAIL-1)+buildLine(MAX_WIDTH_EMAIL-1-email.substring(0,MAX_WIDTH_EMAIL-1).length,' ')+'¦');
+			name = name.substring(MAX_WIDTH_NAME-1);
+			phone = phone.substring(MAX_WIDTH_PHONE-1);
+			email = email.substring(MAX_WIDTH_EMAIL-1);
 		}
-		console.log('+'+buildLine(widthName,'-')+'+'+buildLine(widthPhone,'-')+'+'+buildLine(widthEmail,'-')+'+');
+		console.log('+'+buildLine(MAX_WIDTH_NAME,'-')+'+'+buildLine(MAX_WIDTH_PHONE,'-')+'+'+buildLine(MAX_WIDTH_EMAIL,'-')+'+');
 	}
 };
